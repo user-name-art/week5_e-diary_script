@@ -1,8 +1,5 @@
 import random
 from datacenter.models import Schoolkid, Mark, Chastisement, Lesson, Commendation
-from django.conf import settings
-settings.DEBUG = True
-from django.db import connection
 
 
 COMPLIMENTS = [
