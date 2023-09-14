@@ -59,30 +59,17 @@ def create_commendation(schoolkid, subj):
         
     compliment_text = random.choice(COMPLIMENTS)
 
-    lessons_by_subject = Lesson.objects.filter(
+    last_lesson_by_subject = Lesson.objects.filter(
         year_of_study=child.year_of_study,
         group_letter=child.group_letter,
         subject__title=subj
-        ).order_by('date')
+        ).order_by('date').last()
 
-    if not lessons_by_subject:
-        return 'Такой предмет не найден.'
-
-    for lesson_number, lesson in enumerate(lessons_by_subject):
-        print(f'{lesson_number}: {lesson.date}')
-    
-    print(f'Введите номер урока с требуемой датой от 0 до {lesson_number}:')
-    target_lesson_number = int(input())
-
-    if 0 <= target_lesson_number <= lesson_number:
-        target_lesson = lessons_by_subject[target_lesson_number]
-        Commendation.objects.create(text=compliment_text,
-                                    created=target_lesson.date,
-                                    schoolkid=child,
-                                    subject=target_lesson.subject,
-                                    teacher=target_lesson.teacher
-                                    )
-    else:
-        print(f'Неверно, введите номер урока с требуемой датой от 1 до {lesson_number}:')
+    Commendation.objects.create(text=compliment_text,
+                                created=last_lesson_by_subject.date,
+                                schoolkid=child,
+                                subject=last_lesson_by_subject.subject,
+                                teacher=last_lesson_by_subject.teacher
+                                )
 
     return 'Сделано!'
