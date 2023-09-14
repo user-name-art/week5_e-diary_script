@@ -1,5 +1,8 @@
 import random
 from datacenter.models import Schoolkid, Mark, Chastisement, Lesson, Commendation
+from django.conf import settings
+settings.DEBUG = True
+from django.db import connection
 
 
 COMPLIMENTS = [
@@ -29,11 +32,7 @@ def fix_marks(schoolkid):
     if not child:
         return 'Проверьте вводимые значения и попробуйте еще раз.'
 
-    bad_grades_by_child = Mark.objects.filter(schoolkid=child.id, points__in=[2, 3])
-    
-    for bad_grade in bad_grades_by_child:
-        bad_grade.points = 5
-        bad_grade.save()
+    Mark.objects.filter(schoolkid=child.id, points__in=[2, 3]).update(points=5)
 
     return 'Сделано!'
 
